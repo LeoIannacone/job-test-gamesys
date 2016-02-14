@@ -1,0 +1,33 @@
+
+Hi Leonardo
+
+I hope this finds you well. Thank you for participating in the interview with Bruno he certainly enjoyed speaking with you. I am pleased to inform you we would like you to progress to the next stage of the interview process. In this we ask you to complete this test and return it to us within 1 week. If you are happy to have a go then please see below and we look forward to hearing from you.
+
+TEST
+
+Create a Google App Engine application that executes a Facebook social login.
+
+The application has to persist the user friends list on the datastore and also subscribe to a webhook
+(https://developers.facebook.com/docs/graph-api/webhooks/v2.5) to get notified about any change to the friends list.
+
+Create a "/friends" page that shows the friends list, using a JS framework (possibly ReactJS).
+
+The friends list has to be read from the datastore.
+
+Plus, create a restricted restful endpoint (eg: /api/friends) that returns the list of friends by reading it from the database in a Json response.
+
+Mandatory: application has to be test covered (at least in the most important parts)
+
+Desiderable:
+
+1. browser tests for the ui
+2. using Bootstrap 3 (or alpha version 4)
+
+
+<<<<<<<
+
+If you have any questions please let me know,
+
+Thanks
+Gabrielle
+Recruitment Manager
