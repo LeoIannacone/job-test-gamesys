@@ -22,9 +22,9 @@ version: 1
 
 handlers:
 - url: /static
-  static_dir: gamefriends/static/
+  static_dir: static/
 - url: .*
-  script: gamefriends.gamefriends.wsgi.application
+  script: gamefriends.wsgi.application
 
 # Only pure Python libraries can be vendored
 # Python libraries that use C extensions can
@@ -33,6 +33,8 @@ handlers:
 libraries:
 - name: MySQLdb
   version: 1.2.5
+- name: ssl
+  version: "latest"
 
 
 # Extend skip_files
