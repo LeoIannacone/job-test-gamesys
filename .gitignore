@@ -1,4 +1,6 @@
 venv
 lib
 *.pyc
+friends/app/node_modules
+static/dist
 google-cloud.md

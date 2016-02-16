@@ -16,11 +16,11 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
-from friends.views import FriendsView, FriendsLogout
+from friends.views import FriendsView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^friends/', FriendsView),
+    url(r'^api/', include('api.urls', namespace='api')),
     url('', include('social.apps.django_app.urls', namespace='social')),
-    url(r'^logout/$', FriendsLogout),
 ]
