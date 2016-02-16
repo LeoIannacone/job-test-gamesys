@@ -1,13 +1,11 @@
-from friends.lib import update_friends
-
-
 def auto_logout(*args, **kwargs):
     """Do not compare current user with new one"""
     return {'user': None}
 
 
 def save_friends(strategy, details, user=None, *args, **kwargs):
-    update_friends(user)
+    if user is not None:
+        user.update_friends()
     return {'user': user}
 
 
