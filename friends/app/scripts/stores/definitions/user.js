@@ -10,6 +10,6 @@ export default class User extends I.Record({
   }
 
   get picture() {
-    return `https://graph.facebook.com/${this.uid}/picture?type=normal`
+    return `https://graph.facebook.com/${this.uid}/picture?type=large`
   }
 }

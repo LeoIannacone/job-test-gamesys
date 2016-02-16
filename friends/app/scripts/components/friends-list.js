@@ -35,6 +35,23 @@ export default React.createClass({
     })
   },
 
+  _getWelcomeMessage() {
+    const {user, friends} = this.state
+
+    let message
+    if (friends.isEmpty()) {
+      message = 'It looks like none of your friends is using this App!'
+    } else {
+      message = `This is the list of your friends (${friends.size}) using this App.`
+    }
+    return (
+      <div className='FriendsList-welcome'>
+        <h1>Welcome <span className='FriendsList-welcome-user'>{user.fullName}</span>!</h1>
+        <h2>{message}</h2>
+      </div>
+    )
+  },
+
   render() {
     if (this.state.error) {
       return <div className='errorBlock'>{this.state.error}</div>
@@ -42,15 +59,13 @@ export default React.createClass({
       return null
     }
 
-    const {user, friends} = this.state
+    const {friends} = this.state
 
     const children = friends.map((f, i) => <FriendsListItem friend={f} key={i} />)
 
     return (
       <div className='FriendsList'>
-        <div className='FriendsList-user'>
-          Welcome <span>{user.fullName}</span>, this is the list of your friends using this App!
-        </div>
+        {this._getWelcomeMessage()}
         <div className='FriendsList-list'>
           {children}
         </div>

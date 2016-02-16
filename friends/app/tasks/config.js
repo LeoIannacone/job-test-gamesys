@@ -24,5 +24,16 @@ const webpackConfig = {
 
 export default {
   webpackConfig,
-  dist
+  dist,
+  browsers: [
+    'ie >= 10',
+    'ie_mob >= 10',
+    'ff >= 30',
+    'chrome >= 34',
+    'safari >= 6',
+    'opera >= 23',
+    'ios >= 6',
+    'android >= 4.4',
+    'bb >= 10'
+  ]
 }

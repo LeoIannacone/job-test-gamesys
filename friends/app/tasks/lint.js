@@ -1,8 +1,3 @@
-//
-// Lint task
-// =========
-//
-
 import gulp from 'gulp'
 import gulpPlugins from 'gulp-load-plugins'
 

@@ -5,7 +5,7 @@ import {webpackConfig} from './config'
 
 const $ = gulpPlugins()
 
-const exec = (watch) => {
+const exec = watch => {
   webpackConfig.watch = watch
   return gulp.src(webpackConfig.entry)
     .pipe($.webpack(webpackConfig))

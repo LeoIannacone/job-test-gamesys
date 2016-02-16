@@ -15,9 +15,7 @@ require('babel-core/register')({
 // Load all tasks from the tasks directory
 require('require-dir')('tasks')
 
-gulp.task('build', ['clean', 'js'])
-
-gulp.task('build:dev', ['clean', 'js:watch'])
+gulp.task('build', ['clean', 'styles', 'js'])
 
 gulp.task('default', ['build'])
 
