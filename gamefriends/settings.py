@@ -40,14 +40,15 @@ INSTALLED_APPS = [
     'rest_framework',
     'social.apps.django_app.default',
     'friends',
-    'users'
+    'users',
+    'webhooks'
 ]
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -92,9 +93,9 @@ if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'HOST': '/cloudsql/job-test-gamesys',
+            'HOST': '/cloudsql/job-test-gamesys:job-test-gamesys-db',
             'NAME': 'facebook',
-            'USER': 'root',
+            'USER': 'root'
         }
     }
 else:
@@ -104,7 +105,7 @@ else:
             'NAME': 'facebook',
             'USER': 'job-test-gamesys',
             'PASSWORD': 'RMdk7eHbQbGZHxaxNBQehVMH',
-            'HOST': '173.194.254.165',
+            'HOST': '173.194.106.106',
             'PORT': '3306',
         }
     }
@@ -216,3 +217,7 @@ SOCIAL_AUTH_PIPELINE = (
     'users.social_pipeline.save_uid',  # custom action
     'users.social_pipeline.save_friends'  # custom action
 )
+
+FACEBOOK_WEBHOOK_TOKEN = 'x6cqhr73pMZbAEpgQpuT'
+
+FACEBOOK_WEBHOOK_DEBUG = True

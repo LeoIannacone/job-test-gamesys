@@ -44,4 +44,4 @@ skip_files:
 - ^(.*/)?.*\.py[co]$
 - ^(.*/)?.*/RCS/.*$
 - ^(.*/)?\..*$
-- venv/*
+- friends/app/*

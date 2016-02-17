@@ -17,10 +17,18 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from friends.views import FriendsView
+from webhooks.views import WebhooksView, WebhooksDebugView
+from django.conf import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^friends/', FriendsView),
     url(r'^api/', include('api.urls', namespace='api')),
+    url(r'^webhooks/', WebhooksView.as_view()),
     url('', include('social.apps.django_app.urls', namespace='social')),
 ]
+
+if settings.FACEBOOK_WEBHOOK_DEBUG:
+    urlpatterns.append(
+        url(r'^webhooks-debug/', WebhooksDebugView.as_view())
+    )
