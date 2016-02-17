@@ -2,7 +2,7 @@ import React from 'react'
 import Promise from 'bluebird'
 
 import userStore from '../stores/user-store'
-
+import PageLoader from './helpers/page-loader'
 import FriendsListItem from './friends-list-item'
 
 export default React.createClass({
@@ -56,7 +56,7 @@ export default React.createClass({
     if (this.state.error) {
       return <div className='errorBlock'>{this.state.error}</div>
     } else if (!this.state.canRender) {
-      return null
+      return <PageLoader />
     }
 
     const {friends} = this.state

@@ -8,7 +8,7 @@ const $ = gulpPlugins()
 import {browsers, dist} from './config'
 
 gulp.task('styles', () => {
-  return gulp.src('styles/**/*.less')
+  return gulp.src('styles/main.less')
   .pipe($.less({
     plugins: [
       new NpmImportPlugin(),
