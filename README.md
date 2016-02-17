@@ -3,7 +3,7 @@ Job Test Gamesys
 
 Hi!
 
-This is my solution the the job test as described in the [specs.txt](blob/master/specs.txt) file.
+This is my solution the the job test!
 
 ## Run server
 You have to install deps for the server
