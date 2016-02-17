@@ -23,7 +23,7 @@ facebook.GraphAPI.get_connections = Mock(return_value={
 })
 
 
-class dummy_request_get(Stub):
+class dummy_get(Stub):
     text = """{
         "data": [
             {"id": "30825017510059", "name": "Mario Bros"},
@@ -31,7 +31,7 @@ class dummy_request_get(Stub):
         ]
     }"""
 
-requests.get = dummy_request_get
+requests.get = dummy_get
 
 
 class UsersTestCase(TestCase):

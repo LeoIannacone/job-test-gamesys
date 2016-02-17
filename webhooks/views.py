@@ -57,7 +57,7 @@ class WebhooksView(View):
 
         user.update_friends()
 
-        return get_response('Ok')
+        return get_response(request, 'Ok')
 
     def get(self, request, *args, **kwargs):
         mode = request.GET.get('hub.mode')

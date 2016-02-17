@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^friends/', FriendsView),
     url(r'^api/', include('api.urls', namespace='api')),
-    url(r'^webhooks/', WebhooksView.as_view()),
+    url(r'^webhooks/$', WebhooksView.as_view(), name='webhooks'),
     url('', include('social.apps.django_app.urls', namespace='social')),
 ]
 

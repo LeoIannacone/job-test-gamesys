@@ -13,5 +13,3 @@ class UsersFactory(factory.DjangoModelFactory):
 
     first_name = 'Leo'
     last_name = 'Nnc'
-
-    # friends = []
