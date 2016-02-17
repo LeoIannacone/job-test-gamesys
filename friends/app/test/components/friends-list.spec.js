@@ -39,11 +39,12 @@ describe('FriendsList', () => {
       <FriendsList />
     ))
 
-    return defer(() => {
-      expect(elem.find('FriendsListItem')).to.have.length(2)
+    return Promise.delay(300)
+    .then(() => {
       expect(elem.find('.FriendsList-welcome-user').text()).to.be.equal(me.fullName)
       expect(elem.find('.FriendsList-welcome-message').text())
         .to.include('list of your friends (2)')
+      expect(elem.find('FriendsListItem')).to.have.length(2)
     })
   })
 
