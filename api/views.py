@@ -10,15 +10,14 @@ def response(body):
     return Response({'code': 1, 'response': body})
 
 
-def from_user_to_obj(user):
-    return {
-        'uid': user.uid,
-        'first_name': user.first_name,
-        'last_name': user.last_name
-    }
-
-
 class RestrictedView(APIView):
+
+    def _from_user_to_obj(self, user):
+        return {
+            'uid': user.uid,
+            'first_name': user.first_name,
+            'last_name': user.last_name
+        }
 
     def get(self, request, format=None):
         user = request.user
@@ -35,11 +34,11 @@ class ApiFriendsView(RestrictedView):
     def get_response(self, user):
         body = []
         for f in user.friends.all():
-            body.append(from_user_to_obj(f))
+            body.append(self._from_user_to_obj(f))
         return response(body)
 
 
 class ApiMeView(RestrictedView):
 
     def get_response(self, user):
-        return response(from_user_to_obj(user))
+        return response(self._from_user_to_obj(user))
