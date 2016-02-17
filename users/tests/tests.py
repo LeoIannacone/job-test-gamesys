@@ -1,16 +1,26 @@
 from django.test import TestCase
 
+from mock import Mock
 import factories
 
+from utils.tests import Stub
 
-class Stub(object):
+facebook = factories.models.facebook
+requests = factories.models.requests
 
-    def __init__(self, *args):
-        pass
+facebook.get_app_access_token = Mock(return_value="text token")
 
-
-def dummy_facebook_get_app_access_token(*args):
-    return "test token"
+facebook.GraphAPI.__init__ = Mock(return_value=None)
+facebook.GraphAPI.get_connections = Mock(return_value={
+    'data': [
+        {'id': '1660825017510059', 'name': 'Claudia Fiore'},
+        {'id': '100412193683812', 'name': 'John Tere'}
+    ],
+    'paging': {
+        'next': 'https://to_next_page'
+    },
+    'summary': {'total_count': 355}
+})
 
 
 class dummy_request_get(Stub):
@@ -21,30 +31,7 @@ class dummy_request_get(Stub):
         ]
     }"""
 
-
-class dummy_facebbok_GraphAPI(Stub):
-
-    def get_connections(self, *args):
-        return {
-            'data': [
-                {'id': '1660825017510059', 'name': 'Claudia Fiore'},
-                {'id': '100412193683812', 'name': 'John Tere'}
-            ],
-            'paging': {
-                'next': 'https://to_next_page'
-            },
-            'summary': {'total_count': 355}
-        }
-
-
-factories.models.facebook.get_app_access_token = \
-    dummy_facebook_get_app_access_token
-
-factories.models.facebook.GraphAPI = \
-    dummy_facebbok_GraphAPI
-
-factories.models.requests.get = \
-    dummy_request_get
+requests.get = dummy_request_get
 
 
 class UsersTestCase(TestCase):
@@ -52,5 +39,6 @@ class UsersTestCase(TestCase):
     def test_update_friends(self):
         u = factories.UsersFactory.create()
         u.update_friends()
-        self.assertEqual(len(u.friends.all()), 4,
-                         "User has 4 friends")
+        number_of_friends = len(u.friends.all())
+        self.assertEqual(number_of_friends, 4,
+                         "User has {} friends".format(number_of_friends))
