@@ -47,7 +47,7 @@ export default React.createClass({
     return (
       <div className='FriendsList-welcome'>
         <h1>Welcome <span className='FriendsList-welcome-user'>{user.fullName}</span>!</h1>
-        <h2>{message}</h2>
+        <h2 className='FriendsList-welcome-message'>{message}</h2>
       </div>
     )
   },
