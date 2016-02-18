@@ -1,3 +1,5 @@
+import hmac
+from hashlib import sha1
 from mock import Mock
 from json import dumps
 from django.test import TestCase, Client
@@ -7,7 +9,6 @@ from django.conf import settings
 
 from users.tests import factories
 
-from hashlib import sha1
 
 # Mock update users method
 origin_update_friends = factories.models.User.update_friends
@@ -25,12 +26,12 @@ class WebhooksPOST_TestCase(TestCase):
     def _get_body(self, obj='user', entry={'id': -1}):
         return dumps({
             'object': obj,
-            'entry': entry
+            'entry': [entry]
         })
 
     def _get_signature(self, body):
-        key = settings.FACEBOOK_WEBHOOK_TOKEN
-        return "sha1={}".format(sha1("{}{}".format(key, body)).hexdigest())
+        key = settings.SOCIAL_AUTH_FACEBOOK_SECRET
+        return "sha1={}".format(hmac.new(key, body, sha1).hexdigest())
 
     def test_update_ok(self):
         user = factories.UsersFactory.create()
@@ -41,9 +42,9 @@ class WebhooksPOST_TestCase(TestCase):
         url = reverse('webhooks', )
         response = self.client.post(url, body,
                                     content_type="application/json",
-                                    **{'X-Hub-Signature': signature})
-        self.assertEqual(response.status_code, 200)
+                                    **{'HTTP_X_HUB_SIGNATURE': signature})
         self.assertEqual(response.content, 'Ok')
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(user.update_friends.called)
 
     def test_update_fails_with_wrong_body(self):
@@ -56,7 +57,10 @@ class WebhooksPOST_TestCase(TestCase):
     def test_update_fails_with_wrong_uid(self):
         body = self._get_body()
         url = reverse('webhooks', )
-        response = self.client.post(url, body, content_type="application/json")
+        signature = self._get_signature(body)
+        response = self.client.post(url, body,
+                                    content_type="application/json",
+                                    **{'HTTP_X_HUB_SIGNATURE': signature})
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.content, 'Invalid user id')
 
@@ -66,7 +70,7 @@ class WebhooksPOST_TestCase(TestCase):
         url = reverse('webhooks', )
         response = self.client.post(url, body,
                                     content_type="application/json",
-                                    **{'X-Hub-Signature': 'sha1=invalid'})
+                                    **{'HTTP_X_HUB_SIGNATURE': 'sha1=invalid'})
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.content, 'Invalid signature')
         self.assertFalse(user.update_friends.called)

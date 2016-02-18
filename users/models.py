@@ -12,6 +12,7 @@ class User(AbstractUser):
     friends = models.ManyToManyField('self')
 
     def update_friends(self):
+        self.friends.clear()
         app_key = settings.SOCIAL_AUTH_FACEBOOK_APP_KEY
         app_secret = settings.SOCIAL_AUTH_FACEBOOK_APP_SECRET
         token = facebook.get_app_access_token(app_key, app_secret)
@@ -43,5 +44,4 @@ class User(AbstractUser):
                 'username': uid,
                 'uid': uid
             })
-            friend.friends.add(self)
             self.friends.add(friend)

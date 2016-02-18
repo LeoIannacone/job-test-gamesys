@@ -1,61 +1,70 @@
 from json import loads
 from hashlib import sha1
+import hmac
 
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import View
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from django.conf import settings
 
 from users.models import User
 from webhooks.models import Webhooks
 
 
-def save_debug_webhook(status, data):
+def save_debug_webhook(status, request):
+    status = "{} {}".format(status, request.META.get('HTTP_X_HUB_SIGNATURE'))
     if settings.FACEBOOK_WEBHOOK_DEBUG:
-        Webhooks.objects.create(status=status, data=data)
+        Webhooks.objects.create(status=status, data=request.body)
 
 
 def get_error(request, message):
-    save_debug_webhook("FAIL {}".format(message), request.body)
+    save_debug_webhook("FAIL {}".format(message), request)
     return HttpResponseBadRequest(message)
 
 
 def get_response(request, message):
-    save_debug_webhook("OK {}".format(message), request.body)
+    save_debug_webhook("OK {}".format(message), request)
     return HttpResponse(message)
 
 
 class WebhooksView(View):
 
     def _verify_post_signature(self, request):
-        if 'X-Hub-Signature' not in request.META:
+        x_hub_signature = request.META.get('HTTP_X_HUB_SIGNATURE')
+        if x_hub_signature is None:
             return False
-        signature = request.META.get('X-Hub-Signature')[5:]  # remove the sha1=
+
+        sha_name, signature = x_hub_signature.split('=')
+        if sha_name != 'sha1':
+            return False
+
         body = request.body
-        key = settings.FACEBOOK_WEBHOOK_TOKEN
-        my_sign = sha1("{}{}".format(key, body)).hexdigest()
-        return my_sign == signature
+        key = settings.SOCIAL_AUTH_FACEBOOK_SECRET
+        my_sign = hmac.new(key, body, sha1)
+        return my_sign.hexdigest() == signature
 
     def post(self, request, *args, **kwargs):
         body = request.body
 
         data = loads(body)
         if 'object' not in data or data['object'] != 'user' or \
-                'entry' not in data or 'id' not in data['entry']:
+                'entry' not in data:
             return get_error(request, 'Invalid webhook')
-
-        uid = data['entry']['id']
-
-        if not User.objects.filter(uid=uid).exists():
-            return get_error(request, 'Invalid user id')
-
-        user = User.objects.get(uid=uid)
 
         if not self._verify_post_signature(request):
             return get_error(request, 'Invalid signature')
 
-        user.update_friends()
+        for entry in data['entry']:
+            if 'id' not in entry:
+                return get_error(request, 'Invalid webhook')
+
+            uid = entry['id']
+
+            if not User.objects.filter(uid=uid).exists():
+                return get_error(request, 'Invalid user id')
+
+            user = User.objects.get(uid=uid)
+
+            user.update_friends()
 
         return get_response(request, 'Ok')
 
@@ -73,15 +82,9 @@ class WebhooksView(View):
         return HttpResponse(challenge)
 
 
-class WebhooksDebugView(APIView):
-
-    def _webhook_to_dict(self, w):
-        return {
-            'status': w.status,
-            'body': loads(w.data)
-        }
+class WebhooksDebugView(View):
 
     def get(self, request, *args, **kwargs):
         webhooks = Webhooks.objects.all()
-        body = [self._webhook_to_dict(w) for w in webhooks]
-        return Response(body)
+        body = ["{} - {}".format(w.status, w.data) for w in webhooks]
+        return HttpResponse("<br />".join(body))
